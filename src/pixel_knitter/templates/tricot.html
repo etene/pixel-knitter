@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ img_name }} </title>
+</head>
+<style>
+    table {
+        border: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            #EEEEEE,
+            #EEEEEE 20px,
+            #CCCCCC 20px,
+            #CCCCCC 40px
+        );
+        padding: 0;
+    }
+    td {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        border-radius: 3px;
+        border: 1px dotted gray;
+        font-size: smaller;
+        font-family: monospace;
+        -webkit-text-stroke: .5px black;
+        color: white;
+        text-align: center;
+    }
+    th {
+        font-size: smaller;
+        font-family: monospace;
+    }
+    tr {
+        border-bottom: 1px solid black;
+    }
+    .horizontal-header {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        text-align: left;
+        background-color: white;
+    }
+    .vertical-header {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        vertical-align: text-top;
+        background-color: white;
+    }
+    .colorblock {
+        display: inline-block;
+        border: 1px dashed black;
+        border-radius: 2px;
+        width: 30px;
+        height: 30px;
+    }
+    {% for color in color_classes %}
+    .{{ color_classes[color] }} {
+        background-color: {{ color.css }};
+    }
+    {% endfor %}
+    figure {
+        display: inline-block;
+    }
+</style>
+<body>
+    <main>
+    <h3><tt>{{ img_name }}</tt> - {{ img_size[0] }}x{{ img_size[1] }}</h3>
+    <table cellspacing="0">
+        <tr>
+            <th class="horizontal-header"></th>
+            {% for i in range(0, pixel_lines[0]|length) %}
+            {% if i is even %}
+            <th class="horizontal-header" colspan="2">
+                {{ i }}
+            </th>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% for pixel_line in pixel_lines %}
+        <tr>
+            {% if loop.index is odd %}
+            <th class="vertical-header" rowspan="2">
+                {{ loop.index - 1 }}
+            </th>
+            {% endif %}
+            {% for pixel in pixel_line %}
+            <td class="{{ color_classes[pixel.color] }}" title="{{ pixel.color.css }}">
+                {{ pixel.streak if pixel.streak is not none else "" }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</main>
+<section>
+    <div>
+        <h3>Totaux</h3>
+        {% for pixel in pixel_counts %}
+        <figure>
+            <span class="colorblock {{ color_classes[pixel] }}" title="{{ pixel }}" width="30px"></span>
+            <figcaption>{{ pixel_counts[pixel] }}</figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+</section>
+</body>
+</html>
